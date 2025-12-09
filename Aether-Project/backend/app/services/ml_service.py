@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.impute import SimpleImputer
-import shap
+# import shap
 import joblib
 import os
 import json
@@ -112,59 +112,19 @@ def train_model(story_id: int, db: Session):
         traceback.print_exc()
         return {"status": "error", "message": str(e)}
 
+# import shap (Disabled for Vercel size limit)
+
+# ... (rest of imports)
+
 def get_explanations(story_id: int, db: Session):
     """
     Generate SHAP explanations for the trained model.
+    Note: Disabled in this deployment to reduce package size.
     """
-    try:
-        model_path = os.path.join(MODEL_DIR, f"model_{story_id}.joblib")
-        if not os.path.exists(model_path):
-            return {"status": "error", "message": "Model not trained yet"}
-            
-        data = joblib.load(model_path)
-        model = data['model']
-        X_train = data['X_train']
-        feature_names = data['feature_names']
-        
-        # Calculate SHAP values
-        # Use a sample of background data for speed
-        background = shap.sample(X_train, 100)
-        explainer = shap.TreeExplainer(model)
-        shap_values = explainer.shap_values(background)
-        
-        # Handle classification output (SHAP returns list of arrays)
-        if isinstance(shap_values, list):
-            shap_values = shap_values[1] # Positive class
-            
-        # Calculate mean absolute SHAP value for global importance
-        feature_importance = np.abs(shap_values).mean(axis=0)
-        
-        # Create importance list
-        importance_list = []
-        for name, imp in zip(feature_names, feature_importance):
-            importance_list.append({
-                "feature": name,
-                "importance": float(imp)
-            })
-            
-        # Sort by importance
-        importance_list.sort(key=lambda x: x['importance'], reverse=True)
-        
-        # Normalize importance to percentage
-        total_importance = sum(x['importance'] for x in importance_list)
-        if total_importance > 0:
-            for item in importance_list:
-                item['importance'] = round((item['importance'] / total_importance) * 100, 1)
-        
-        return {
-            "feature_importance": importance_list[:10], # Top 10 features
-            "summary": f"The model's top predictor is '{importance_list[0]['feature']}', followed by '{importance_list[1]['feature']}'."
-        }
-
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return {"status": "error", "message": str(e)}
+    return {
+        "feature_importance": [],
+        "summary": "AI Explanations (SHAP) are currently disabled to optimize deployment size."
+    }
 
 def perform_clustering(story_id: int, db: Session):
     """
