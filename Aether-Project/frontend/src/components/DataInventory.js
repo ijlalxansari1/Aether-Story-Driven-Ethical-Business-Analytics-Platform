@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../services/api';
 import { motion } from 'framer-motion';
 import { FileText, ShieldAlert, Lock, Globe, Building } from 'lucide-react';
 
@@ -14,7 +15,7 @@ export default function DataInventory({ projectId, onComplete }) {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/inventory`, {
+            const response = await fetch(`${API_URL}/projects/${projectId}/inventory`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -83,8 +84,8 @@ export default function DataInventory({ projectId, onComplete }) {
                                         key={level.id}
                                         onClick={() => setFormData({ ...formData, sensitivity: level.id })}
                                         className={`p-4 rounded-xl border text-left transition-all ${formData.sensitivity === level.id
-                                                ? 'border-teal-500 bg-teal-50 text-teal-900 ring-1 ring-teal-500'
-                                                : 'border-slate-200 hover:border-teal-300'
+                                            ? 'border-teal-500 bg-teal-50 text-teal-900 ring-1 ring-teal-500'
+                                            : 'border-slate-200 hover:border-teal-300'
                                             }`}
                                     >
                                         <level.icon className={`mb-2 ${formData.sensitivity === level.id ? 'text-teal-600' : 'text-slate-400'}`} />

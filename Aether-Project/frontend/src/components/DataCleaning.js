@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../services/api';
 import { motion } from 'framer-motion';
 import {
     Table, ArrowRight, Trash2, Edit2, Droplet, RefreshCw,
@@ -15,7 +16,7 @@ export default function DataCleaning({ datasetId, onProceed, onBack }) {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://127.0.0.1:8000/datasets/${datasetId}/preview`);
+            const response = await fetch(`${API_URL}/datasets/${datasetId}/preview`);
             if (response.ok) {
                 const result = await response.json();
                 setData(result);
@@ -34,7 +35,7 @@ export default function DataCleaning({ datasetId, onProceed, onBack }) {
     const handleClean = async (operation, params = {}) => {
         setProcessing(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/datasets/${datasetId}/clean`, {
+            const response = await fetch(`${API_URL}/datasets/${datasetId}/clean`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ operation, params })

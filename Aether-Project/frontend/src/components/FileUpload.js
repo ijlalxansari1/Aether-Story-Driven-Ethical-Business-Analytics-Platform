@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { API_URL } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloud, File, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 
@@ -51,7 +52,7 @@ export default function FileUpload({ onUploadComplete, projectId }) {
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/upload', {
+            const response = await fetch(`${API_URL}/upload`, {
                 method: 'POST',
                 body: formData,
             });

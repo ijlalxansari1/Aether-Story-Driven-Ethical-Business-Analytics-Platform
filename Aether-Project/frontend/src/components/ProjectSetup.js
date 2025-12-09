@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../services/api';
 import { motion } from 'framer-motion';
 import { ArrowRight, Target, Users, Shield, Check, Plus } from 'lucide-react';
 
@@ -49,7 +50,7 @@ export default function ProjectSetup({ onComplete }) {
                 objective: formData.objective === 'Custom' ? customObjective : formData.objective
             };
 
-            const response = await fetch('http://127.0.0.1:8000/projects/', {
+            const response = await fetch(`${API_URL}/projects/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(finalData)
@@ -224,8 +225,8 @@ export default function ProjectSetup({ onComplete }) {
                                         key={s}
                                         onClick={() => toggleSelection('stakeholders', s)}
                                         className={`px-3 py-2 rounded-full text-sm border transition-all ${formData.stakeholders.includes(s)
-                                                ? 'bg-teal-100 border-teal-500 text-teal-800'
-                                                : 'bg-white border-slate-200 text-slate-600 hover:border-teal-300'
+                                            ? 'bg-teal-100 border-teal-500 text-teal-800'
+                                            : 'bg-white border-slate-200 text-slate-600 hover:border-teal-300'
                                             }`}
                                     >
                                         {s}

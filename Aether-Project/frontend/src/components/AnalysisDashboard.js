@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -21,15 +22,15 @@ export default function AnalysisDashboard({ storyId }) {
     useEffect(() => {
         const fetchAnalysis = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/analysis/${storyId}`);
+                const response = await fetch(`${API_URL}/analysis/${storyId}`);
                 if (response.ok) {
                     const result = await response.json();
                     setData(result);
 
                     // Fetch AI features in parallel
                     Promise.all([
-                        fetch(`http://127.0.0.1:8000/ai/correlations/${storyId}`),
-                        fetch(`http://127.0.0.1:8000/ai/recommendations/${storyId}`)
+                        fetch(`${API_URL}/ai/correlations/${storyId}`),
+                        fetch(`${API_URL}/ai/recommendations/${storyId}`)
                     ]).then(async ([corrRes, recRes]) => {
                         if (corrRes.ok) {
                             const corrData = await corrRes.json();
@@ -52,7 +53,7 @@ export default function AnalysisDashboard({ storyId }) {
     }, [storyId]);
 
     const handleDownloadReport = () => {
-        window.open(`http://127.0.0.1:8000/reports/${storyId}`, '_blank');
+        window.open(`${API_URL}/reports/${storyId}`, '_blank');
     };
 
     const getPriorityColor = (priority) => {
@@ -628,8 +629,8 @@ export default function AnalysisDashboard({ storyId }) {
                                     onClick={async () => {
                                         try {
                                             const [clusterRes, anomalyRes] = await Promise.all([
-                                                fetch(`http://127.0.0.1:8000/ml/cluster/${storyId}`),
-                                                fetch(`http://127.0.0.1:8000/ml/anomalies/${storyId}`)
+                                                fetch(`${API_URL}/ml/cluster/${storyId}`),
+                                                fetch(`${API_URL}/ml/anomalies/${storyId}`)
                                             ]);
 
                                             if (clusterRes.ok) setClusters(await clusterRes.json());

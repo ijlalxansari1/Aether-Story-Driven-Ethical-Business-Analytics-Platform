@@ -8,3 +8,4 @@ openpyxl
 scikit-learn
 shap
 joblib
+psycopg2-binary

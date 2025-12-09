@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Sparkles, Zap, Brain, ChevronLeft, BookOpen, Lightbulb } from 'lucide-react';
 
@@ -48,7 +49,7 @@ export default function StoryWizard({ datasetId, onComplete }) {
     const handleSuggest = async () => {
         setLoadingSuggestions(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/stories/suggest/${datasetId}`, {
+            const response = await fetch(`${API_URL}/stories/suggest/${datasetId}`, {
                 method: 'POST'
             });
             if (response.ok) {
@@ -66,7 +67,7 @@ export default function StoryWizard({ datasetId, onComplete }) {
     const handleGenerateHypotheses = async () => {
         setLoadingHypotheses(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/ai/hypotheses/${datasetId}?story_type=${formData.story_type}&target_audience=${formData.target_audience}`);
+            const response = await fetch(`${API_URL}/ai/hypotheses/${datasetId}?story_type=${formData.story_type}&target_audience=${formData.target_audience}`);
             if (response.ok) {
                 const data = await response.json();
                 setHypotheses(data.hypotheses);
@@ -87,7 +88,7 @@ export default function StoryWizard({ datasetId, onComplete }) {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://127.0.0.1:8000/stories/', {
+            const response = await fetch(`${API_URL}/stories/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...formData, dataset_id: datasetId })
