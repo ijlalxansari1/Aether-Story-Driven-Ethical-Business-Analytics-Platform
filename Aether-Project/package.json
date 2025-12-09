@@ -8,6 +8,6 @@
         "lint": "cd frontend && npm run lint"
     },
     "engines": {
-        "node": "20.x"
+        "node": "24.x"
     }
 }
