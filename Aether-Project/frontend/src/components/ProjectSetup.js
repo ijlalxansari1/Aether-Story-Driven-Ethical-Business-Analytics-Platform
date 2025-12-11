@@ -50,7 +50,7 @@ export default function ProjectSetup({ onComplete }) {
                 objective: formData.objective === 'Custom' ? customObjective : formData.objective
             };
 
-            const response = await fetch(`${API_URL}/projects/`, {
+            const response = await fetch(`${API_URL}/projects`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(finalData)
