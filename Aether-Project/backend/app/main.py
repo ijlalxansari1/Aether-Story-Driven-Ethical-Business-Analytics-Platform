@@ -7,7 +7,7 @@ from .routes import upload, story, analysis, report, ml, dataset, ai, project
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Aether Analytics Platform")
+app = FastAPI(title="Aether Analytics Platform", root_path="/api")
 
 # Configure CORS
 app.add_middleware(
@@ -18,14 +18,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(upload.router, prefix="/api")
-app.include_router(story.router, prefix="/api")
-app.include_router(analysis.router, prefix="/api")
-app.include_router(report.router, prefix="/api")
-app.include_router(ml.router, prefix="/api")
-app.include_router(dataset.router, prefix="/api")
-app.include_router(ai.router, prefix="/api")
-app.include_router(project.router, prefix="/api")
+app.include_router(upload.router)
+app.include_router(story.router)
+app.include_router(analysis.router)
+app.include_router(report.router)
+app.include_router(ml.router)
+app.include_router(dataset.router)
+app.include_router(ai.router)
+app.include_router(project.router)
 
 @app.get("/")
 async def read_root():
