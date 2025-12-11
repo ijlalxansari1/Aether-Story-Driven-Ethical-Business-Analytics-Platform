@@ -21,3 +21,4 @@ ENV/
 .env.test.local
 .env.production.local
 backend/env
+frontend/node_modules

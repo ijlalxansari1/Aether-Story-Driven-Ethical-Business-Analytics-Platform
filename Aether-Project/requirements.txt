@@ -5,7 +5,7 @@ sqlalchemy
 python-multipart
 pandas
 openpyxl
-scikit-learn
+
 
 joblib
 psycopg2-binary
