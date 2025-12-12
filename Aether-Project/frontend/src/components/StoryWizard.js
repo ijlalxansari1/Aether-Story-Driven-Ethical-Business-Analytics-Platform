@@ -262,10 +262,38 @@ export default function StoryWizard({ datasetId, onComplete }) {
                                         onChange={(e) => setFormData({ ...formData, target_audience: e.target.value })}
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white"
                                     >
-                                        <option value="executive">Executive / Business</option>
-                                        <option value="technical">Technical / Data Science</option>
-                                        <option value="general">General Audience</option>
+                                        <option value="executive">Executive (High-Level KPIs)</option>
+                                        <option value="technical">Technical (Detailed Tables)</option>
+                                        <option value="general">General (Balanced Mix)</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            {/* BI Analyst Hat: Layout Preview Hint */}
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-sm text-slate-600 flex gap-3">
+                                <div className="p-2 bg-white rounded-lg border border-slate-200 h-fit">
+                                    {formData.target_audience === 'executive' ? (
+                                        <div className="w-4 h-4 grid grid-cols-2 gap-0.5">
+                                            <div className="bg-slate-400 col-span-2 rounded-[1px]"></div>
+                                            <div className="bg-slate-300 rounded-[1px]"></div>
+                                            <div className="bg-slate-300 rounded-[1px]"></div>
+                                        </div>
+                                    ) : (
+                                        <div className="w-4 h-4 flex flex-col gap-0.5">
+                                            <div className="bg-slate-400 h-1 w-full rounded-[1px]"></div>
+                                            <div className="bg-slate-300 h-0.5 w-full rounded-[1px]"></div>
+                                            <div className="bg-slate-300 h-0.5 w-full rounded-[1px]"></div>
+                                            <div className="bg-slate-300 h-0.5 w-full rounded-[1px]"></div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div>
+                                    <span className="font-semibold text-slate-900">Dashboard Layout Preview:</span>
+                                    <p className="mt-1">
+                                        {formData.target_audience === 'executive'
+                                            ? "Focus on big number cards and summary charts for quick decision making."
+                                            : "Detailed views with granular data tables and deep-dive capabilities."}
+                                    </p>
                                 </div>
                             </div>
 

@@ -25,6 +25,8 @@ def create_story(story: story_schema.StoryCreate, db: Session = Depends(get_db))
             level=story.level,
             context=story.context,
             hypotheses=json.dumps(story.hypotheses),
+            story_type=story.story_type,
+            target_audience=story.target_audience,
             dataset_id=story.dataset_id
         )
         db.add(db_story)
@@ -38,6 +40,8 @@ def create_story(story: story_schema.StoryCreate, db: Session = Depends(get_db))
             "business_objective": db_story.business_objective,
             "level": db_story.level,
             "context": db_story.context,
+            "story_type": db_story.story_type,
+            "target_audience": db_story.target_audience,
             "dataset_id": db_story.dataset_id,
             "created_at": db_story.created_at,
             "hypotheses": json.loads(db_story.hypotheses) if db_story.hypotheses else []

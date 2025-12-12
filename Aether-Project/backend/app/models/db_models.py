@@ -25,6 +25,8 @@ class Story(Base):
     level = Column(Integer)  # 1, 2, or 3
     context = Column(String)
     hypotheses = Column(String) # JSON string
+    story_type = Column(String, default="exploratory")
+    target_audience = Column(String, default="executive")
     dataset_id = Column(Integer, ForeignKey("datasets.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
 

@@ -80,102 +80,79 @@ export default function Home() {
 
             <main className="pt-24 pb-12 px-6">
                 <div className="max-w-7xl mx-auto">
+                    {/* Navigation Controls */}
+                    <div className="flex justify-between items-center mb-6">
+                        {step > 1 && (
+                            <button
+                                onClick={() => setStep(step - 1)}
+                                className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-slate-100"
+                            >
+                                ← Back
+                            </button>
+                        )}
+                        <span className="text-sm font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                            Step {step} of {steps.length}: {steps[step - 1].label}
+                        </span>
+                    </div>
+
                     {/* Progress Bar */}
                     <ProgressBar currentStep={step} steps={steps} />
 
-                    <AnimatePresence mode="wait">
-                        {step === 1 && (
-                            <motion.div
-                                key="project"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                            >
-                                <ProjectSetup onComplete={handleProjectComplete} />
-                            </motion.div>
-                        )}
+                    {step === 1 && (
+                        <div className="animate-in fade-in duration-500">
+                            <ProjectSetup onComplete={handleProjectComplete} />
+                        </div>
+                    )}
 
-                        {step === 2 && (
-                            <motion.div
-                                key="inventory"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                            >
-                                <DataInventory projectId={projectId} onComplete={handleInventoryComplete} />
-                            </motion.div>
-                        )}
+                    {step === 2 && (
+                        <div className="animate-in fade-in duration-500">
+                            <DataInventory projectId={projectId} onComplete={handleInventoryComplete} />
+                        </div>
+                    )}
 
-                        {step === 3 && (
-                            <motion.div
-                                key="metrics"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                            >
-                                <MetricBuilder projectId={projectId} onComplete={handleMetricsComplete} />
-                            </motion.div>
-                        )}
+                    {step === 3 && (
+                        <div className="animate-in fade-in duration-500">
+                            <MetricBuilder projectId={projectId} onComplete={handleMetricsComplete} />
+                        </div>
+                    )}
 
-                        {step === 4 && (
-                            <motion.div
-                                key="upload"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="flex flex-col items-center"
-                            >
-                                <div className="text-center mb-10">
-                                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
-                                        Upload Your Data
-                                    </h1>
-                                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                                        Securely upload your dataset. We'll apply the ethical constraints you defined.
-                                    </p>
-                                </div>
-                                <FileUpload projectId={projectId} onUploadComplete={handleUploadComplete} />
-                            </motion.div>
-                        )}
+                    {step === 4 && (
+                        <div className="flex flex-col items-center animate-in fade-in duration-500">
+                            <div className="text-center mb-10">
+                                <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
+                                    Upload Your Data
+                                </h1>
+                                <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                                    Securely upload your dataset. We'll apply the ethical constraints you defined.
+                                </p>
+                            </div>
+                            <FileUpload projectId={projectId} onUploadComplete={handleUploadComplete} />
+                        </div>
+                    )}
 
-                        {step === 5 && (
-                            <motion.div
-                                key="clean"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                            >
-                                <DataCleaning
-                                    datasetId={datasetId}
-                                    onProceed={handleCleaningComplete}
-                                />
-                            </motion.div>
-                        )}
+                    {step === 5 && (
+                        <div className="animate-in fade-in duration-500">
+                            <DataCleaning
+                                datasetId={datasetId}
+                                onProceed={handleCleaningComplete}
+                            />
+                        </div>
+                    )}
 
-                        {step === 6 && (
-                            <motion.div
-                                key="story"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                            >
-                                <StoryWizard
-                                    datasetId={datasetId}
-                                    onComplete={handleStoryComplete}
-                                />
-                            </motion.div>
-                        )}
+                    {step === 6 && (
+                        <div className="animate-in fade-in duration-500">
+                            <StoryWizard
+                                datasetId={datasetId}
+                                onComplete={handleStoryComplete}
+                            />
+                        </div>
+                    )}
 
-                        {step === 7 && (
-                            <motion.div
-                                key="analysis"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                            >
-                                <AnalysisDashboard storyId={storyId} />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    {step === 7 && (
+                        <div className="animate-in fade-in duration-500">
+                            <AnalysisDashboard storyId={storyId} />
+                        </div>
+                    )}
                 </div>
             </main>
         </div>

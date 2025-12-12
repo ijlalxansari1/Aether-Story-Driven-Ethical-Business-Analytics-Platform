@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { API_URL } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     ScatterChart, Scatter
@@ -12,6 +14,7 @@ import {
 
 export default function AnalysisDashboard({ storyId }) {
     const [data, setData] = useState(null);
+    const [story, setStory] = useState(null); // Moved to top level
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('insights');
     const [correlations, setCorrelations] = useState([]);
@@ -22,6 +25,14 @@ export default function AnalysisDashboard({ storyId }) {
     useEffect(() => {
         const fetchAnalysis = async () => {
             try {
+                // Fetch Story Details first (for layout preferences)
+                const storyRes = await fetch(`${API_URL}/stories/${storyId}`);
+                if (storyRes.ok) {
+                    const storyData = await storyRes.json();
+                    setStory(storyData);
+                }
+
+                // Fetch Analysis Data
                 const response = await fetch(`${API_URL}/analysis/${storyId}`);
                 if (response.ok) {
                     const result = await response.json();
@@ -52,8 +63,20 @@ export default function AnalysisDashboard({ storyId }) {
         fetchAnalysis();
     }, [storyId]);
 
-    const handleDownloadReport = () => {
-        window.open(`${API_URL}/reports/${storyId}`, '_blank');
+    // BI Analyst Hat: Executive vs Technical Layouts
+    const isExecutive = story?.target_audience === 'executive';
+
+    const handleDownloadReport = async () => {
+        const element = document.getElementById('analysis-dashboard');
+        const canvas = await html2canvas(element, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`aether-report-${storyId}.pdf`);
     };
 
     const getPriorityColor = (priority) => {
@@ -95,9 +118,10 @@ export default function AnalysisDashboard({ storyId }) {
 
     return (
         <motion.div
+            id="analysis-dashboard"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-7xl mx-auto space-y-6"
+            className="w-full max-w-7xl mx-auto space-y-6 bg-slate-50 p-4"
         >
             {/* Header */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -299,8 +323,8 @@ export default function AnalysisDashboard({ storyId }) {
                             </div>
                         )}
 
-                        {/* Phase 10: Data Transparency Card */}
-                        {data.data_card && (
+                        {/* Phase 10: Data Transparency Card (Technical View Only) */}
+                        {!isExecutive && data.data_card && (
                             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
                                 <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                                     <Shield className="text-teal-600" size={20} />
@@ -707,35 +731,50 @@ export default function AnalysisDashboard({ storyId }) {
                             </div>
                         )}
 
-                        {/* Anomalies Section */}
+                        {/* Anomalies Section (Dynamic View) */}
                         {anomalies && anomalies.anomaly_count > 0 && (
                             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 border-l-4 border-l-red-500">
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                                     <AlertTriangle className="text-red-500" />
-                                    Top Anomalies Detected
+                                    {isExecutive ? "Anomaly Overview" : "Top Anomalies Detected"}
                                 </h3>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm text-left">
-                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                                            <tr>
-                                                {Object.keys(anomalies.top_anomalies[0]).slice(0, 5).map(key => (
-                                                    <th key={key} className="px-6 py-3">{key}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {anomalies.top_anomalies.map((row, idx) => (
-                                                <tr key={idx} className="bg-white border-b hover:bg-gray-50">
-                                                    {Object.values(row).slice(0, 5).map((val, i) => (
-                                                        <td key={i} className="px-6 py-4 font-medium text-gray-900">
-                                                            {val}
-                                                        </td>
+
+                                {isExecutive ? (
+                                    <div className="flex items-center gap-4">
+                                        <div className="p-4 bg-red-50 rounded-xl">
+                                            <span className="text-3xl font-bold text-red-600 block">{anomalies.anomaly_count}</span>
+                                            <span className="text-sm text-red-800 font-medium">Outliers Found</span>
+                                        </div>
+                                        <p className="text-gray-600 max-w-lg">
+                                            We detected significant deviations in your data.
+                                            These outliers represent {((anomalies.anomaly_count / dataset_info.rows) * 100).toFixed(1)}% of your total records.
+                                            Review with a data analyst is recommended.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm text-left">
+                                            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                                <tr>
+                                                    {Object.keys(anomalies.top_anomalies[0]).slice(0, 5).map(key => (
+                                                        <th key={key} className="px-6 py-3">{key}</th>
                                                     ))}
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                {anomalies.top_anomalies.map((row, idx) => (
+                                                    <tr key={idx} className="bg-white border-b hover:bg-gray-50">
+                                                        {Object.values(row).slice(0, 5).map((val, i) => (
+                                                            <td key={i} className="px-6 py-4 font-medium text-gray-900">
+                                                                {val}
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </motion.div>
@@ -744,3 +783,4 @@ export default function AnalysisDashboard({ storyId }) {
         </motion.div>
     );
 }
+    

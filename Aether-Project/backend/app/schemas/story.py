@@ -8,6 +8,8 @@ class StoryBase(BaseModel):
     level: int
     context: Optional[str] = None
     hypotheses: Optional[List[str]] = []
+    story_type: Optional[str] = "exploratory"
+    target_audience: Optional[str] = "executive"
 
 class StoryCreate(StoryBase):
     dataset_id: int
