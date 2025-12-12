@@ -21,7 +21,6 @@ class InventoryCreate(BaseModel):
     source: str
     sensitivity: str
 
-@router.post("/", include_in_schema=False)
 @router.post("")
 def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
     return project_service.create_project(
