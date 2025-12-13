@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-api_router = APIRouter(prefix="/api")
+api_router = APIRouter()
 api_router.include_router(upload.router)
 api_router.include_router(story.router)
 api_router.include_router(analysis.router)
@@ -25,6 +25,8 @@ api_router.include_router(dataset.router)
 api_router.include_router(ai.router)
 api_router.include_router(project.router)
 
+# Double-mount to handle both Local and Vercel path stripping cases
+app.include_router(api_router, prefix="/api")
 app.include_router(api_router)
 
 @app.get("/")
