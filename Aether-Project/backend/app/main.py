@@ -27,6 +27,8 @@ async def preflight_handler(rest_of_path: str):
 # FORCE FIX: Direct route to bypass potential Router/Vercel prefix issues
 @app.post("/api/projects")
 @app.post("/projects") 
+@app.post("/")
+@app.post("/api")
 def create_project_direct(project_in: ProjectCreate, db: Session = Depends(get_db)):
     return project_service.create_project(
         title=project_in.title,
